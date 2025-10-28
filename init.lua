@@ -31,6 +31,7 @@ require 'lazy-bootstrap'
 -- NOTE: Here is where you install your plugins.
 require 'lazy-plugins'
 
+-- TODO: Ajouter le texte en dessous au fichier lazy-plugins.lua
 -- {
 --     ui = {
 --       -- If you are using a Nerd Font: set icons to an empty table which will use the
