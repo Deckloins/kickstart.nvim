@@ -1,5 +1,5 @@
-
-  return {
+return {
+  {
     -- `lazydev` configures lua lsp for your neovim config, runtime and plugins
     -- used for completion, annotations and signatures of neovim apis
     'folke/lazydev.nvim',
@@ -29,28 +29,6 @@
       'saghen/blink.cmp',
     },
     config = function()
-      -- brief aside: **what is lsp?**
-      --
-      -- lsp is an initialism you've probably heard, but might not understand what it is.
-      --
-      -- lsp stands for language server protocol. it's a protocol that helps editors
-      -- and language tooling communicate in a standardized fashion.
-      --
-      -- in general, you have a "server" which is some tool built to understand a particular
-      -- language (such as `gopls`, `lua_ls`, `rust_analyzer`, etc.). these language servers
-      -- (sometimes called lsp servers, but that's kind of like atm machine) are standalone
-      -- processes that communicate with some "client" - in this case, neovim!
-      --
-      -- lsp provides neovim with features like:
-      --  - go to definition
-      --  - find references
-      --  - autocompletion
-      --  - symbol search
-      --  - and more!
-      --
-      -- thus, language servers are external tools that must be installed separately from
-      -- neovim. this is where `mason` and related plugins come into play.
-      --
       -- if you're wondering about lsp vs treesitter, you can check out the wonderfully
       -- and elegantly composed help section, `:help lsp-vs-treesitter`
 
@@ -127,7 +105,7 @@
           --
           -- when you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client_supports_method(client, vim.lsp.protocol.methods.textdocument_documenthighlight, event.buf) then
+          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'cursorhold', 'cursorholdi' }, {
               buffer = event.buf,
@@ -167,13 +145,13 @@
       vim.diagnostic.config {
         severity_sort = true,
         float = { border = 'rounded', source = 'if_many' },
-        underline = { severity = vim.diagnostic.severity.error },
+        underline = { severity = vim.diagnostic.severity.ERROR },
         signs = vim.g.have_nerd_font and {
           text = {
-            [vim.diagnostic.severity.error] = '󰅚 ',
-            [vim.diagnostic.severity.warn] = '󰀪 ',
-            [vim.diagnostic.severity.info] = '󰋽 ',
-            [vim.diagnostic.severity.hint] = '󰌶 ',
+            [vim.diagnostic.severity.E] = '󰅚 ',
+            [vim.diagnostic.severity.W] = '󰀪 ',
+            [vim.diagnostic.severity.I] = '󰋽 ',
+            [vim.diagnostic.severity.HINT] = '󰌶 ',
           },
         } or {},
         virtual_text = {
@@ -181,20 +159,16 @@
           spacing = 2,
           format = function(diagnostic)
             local diagnostic_message = {
-              [vim.diagnostic.severity.error] = diagnostic.message,
-              [vim.diagnostic.severity.warn] = diagnostic.message,
-              [vim.diagnostic.severity.info] = diagnostic.message,
-              [vim.diagnostic.severity.hint] = diagnostic.message,
+              [vim.diagnostic.severity.E] = diagnostic.message,
+              [vim.diagnostic.severity.W] = diagnostic.message,
+              [vim.diagnostic.severity.INFO] = diagnostic.message,
+              [vim.diagnostic.severity.HINT] = diagnostic.message,
             }
             return diagnostic_message[diagnostic.severity]
           end,
         },
       }
 
-      -- lsp servers and clients are able to communicate to each other what features they support.
-      --  by default, neovim doesn't support everything that is in the lsp specification.
-      --  when you add blink.cmp, luasnip, etc. neovim now has *more* capabilities.
-      --  so, we create new capabilities with blink.cmp, and then broadcast that to the servers.
       local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       -- enable the following language servers
@@ -209,8 +183,8 @@
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
+        pyright = {},
+        rust_analyzer = {},
         -- ... etc. see `:help lspconfig-all` for a list of all the pre-configured lsps
         --
         -- some languages (like typescript) have entire language plugins that can be useful:
@@ -230,7 +204,7 @@
                 callsnippet = 'replace',
               },
               -- you can toggle below to ignore lua_ls's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -250,10 +224,12 @@
       -- you can add other tools here that you want mason to install
       -- for you, so that they are available from within neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        'stylua', -- used to format lua code
-      })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+      require('mason-tool-installer').setup {
+        ensure_installed = vim.list_extend(ensure_installed, {
+          'stylua', -- format tool
+        }),
+      }
 
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (kickstart populates installs via mason-tool-installer)
@@ -270,4 +246,5 @@
         },
       }
     end,
-  }
+  },
+}
