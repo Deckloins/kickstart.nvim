@@ -28,6 +28,7 @@ return { -- Autoformat
       end
     end,
     formatters_by_ft = {
+      python = { 'ruff' },
       bash = { 'shfmt' },
       lua = { 'stylua' },
       _ = { 'prettier' },

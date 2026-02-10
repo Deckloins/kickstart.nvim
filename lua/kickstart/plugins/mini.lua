@@ -5,7 +5,7 @@ return { -- Collection of various small independent plugins/modules
     require('mini.ai').setup { n_lines = 500 }
 
     -- Add/delete/replace surroundings (brackets, quotes, etc.)
-    require('mini.surround').setup()
+    -- require('mini.surround').setup()
 
     -- Simple and easy statusline.
     --  You could remove this setup call if you don't like it,

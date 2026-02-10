@@ -31,6 +31,26 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set('n', '<leader>r', function()
+  -- Save the file first
+  vim.cmd 'write'
+
+  -- Get the file type
+  local filetype = vim.bo.filetype
+
+  -- Define command based on filetype
+  if filetype == 'python' then
+    vim.cmd 'term python3 %' -- Opens in a terminal buffer
+  elseif filetype == 'rust' then
+    vim.cmd 'term cargo run'
+  elseif filetype == 'cpp' then
+    vim.cmd 'term g++ % -o %< && ./%<'
+  elseif filetype == 'sh' then
+    vim.cmd 'term bash %'
+  else
+    print('No run command defined for ' .. filetype)
+  end
+end, { desc = 'Save and Run File' })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
