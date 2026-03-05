@@ -1,6 +1,5 @@
 -- [[ Setting options ]]
 -- See `:help vim.o`
--- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
@@ -47,8 +46,6 @@ vim.o.splitbelow = true
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 --
---  Notice listchars is set using `vim.opt` instead of `vim.o`.
---  It is very similar to `vim.o` but offers an interface for conveniently interacting with tables.
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = true
