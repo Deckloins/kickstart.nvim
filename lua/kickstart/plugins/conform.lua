@@ -12,6 +12,8 @@ return { -- Autoformat
       desc = '[F]ormat buffer',
     },
   },
+  ---@module 'conform'
+  ---@type conform.setupOpts
   opts = {
     notify_on_error = false,
     format_on_save = function(bufnr)
@@ -22,7 +24,7 @@ return { -- Autoformat
         return nil
       else
         return {
-          timeout_ms = 500,
+          timeout_ms = 1000,
           lsp_format = 'fallback',
         }
       end
@@ -31,7 +33,16 @@ return { -- Autoformat
       python = { 'ruff' },
       bash = { 'shfmt' },
       lua = { 'stylua' },
-      _ = { 'prettier' },
+      rust = { 'rustfmt', lsp_format = 'fallback' },
+      javascript = { 'prettier' },
+      typescript = { 'prettier' },
+      javascriptreact = { 'prettier' },
+      typescriptreact = { 'prettier' },
+      css = { 'prettier' },
+      html = { 'prettier' },
+      json = { 'prettier' },
+      yaml = { 'prettier' },
+      markdown = { 'markdownlint' },
     },
   },
 }

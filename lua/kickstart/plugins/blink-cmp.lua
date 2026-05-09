@@ -5,6 +5,11 @@ return { -- Autocompletion
   dependencies = {
     -- Snippet Engine
     {
+      {
+        'saghen/blink.compat',
+        opts = {},
+        version = '*',
+      },
       'L3MON4D3/LuaSnip',
       version = '2.*',
       build = (function()
@@ -73,9 +78,14 @@ return { -- Autocompletion
     },
 
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'lazydev' },
+      default = { 'lsp', 'path', 'snippets', 'lazydev', 'crates' },
       providers = {
         lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+        crates = {
+          name = 'crates',
+          module = 'blink.compat.source',
+          opts = {},
+        },
       },
     },
 

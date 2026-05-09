@@ -2,7 +2,13 @@ return {
   'echasnovski/mini.nvim',
   config = function()
     -- Better Around/Inside textobjects
-    require('mini.ai').setup { n_lines = 500 }
+    require('mini.ai').setup {
+      mappings = {
+        around_next = 'aa',
+        inside_next = 'ii',
+      },
+      n_lines = 500,
+    }
 
     -- Add/delete/replace surroundings (brackets, quotes, etc.)
     -- require('mini.surround').setup()
