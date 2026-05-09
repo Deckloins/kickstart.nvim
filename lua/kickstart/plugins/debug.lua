@@ -137,6 +137,46 @@ return {
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
+    dap.configurations.rust = {
+      {
+        name = 'Launch Rust binary (cargo build)',
+        type = 'codelldb',
+        request = 'launch',
+        program = function()
+          -- Build the project and resolve the binary path automatically.
+          vim.notify('Running cargo build…', vim.log.levels.INFO)
+          vim.fn.system 'cargo build 2>&1'
+          if vim.v.shell_error ~= 0 then
+            vim.notify('cargo build failed — check :messages', vim.log.levels.ERROR)
+            return dap.ABORT
+          end
+
+          -- Ask cargo where the binary lives rather than guessing the name.
+          local meta = vim.fn.system 'cargo metadata --no-deps --format-version 1'
+          local ok, decoded = pcall(vim.fn.json_decode, meta)
+          if not ok or not decoded then
+            vim.notify('Could not parse cargo metadata', vim.log.levels.ERROR)
+            return dap.ABORT
+          end
+
+          local target_dir = decoded.target_directory
+          -- Heuristic: take the first binary target in the first package.
+          -- For workspaces with multiple binaries, prefer <leader>dr instead.
+          for _, pkg in ipairs(decoded.packages) do
+            for _, target in ipairs(pkg.targets) do
+              if vim.tbl_contains(target.kind, 'bin') then
+                return target_dir .. '/debug/' .. target.name
+              end
+            end
+          end
+
+          -- Fallback: ask the user
+          return vim.fn.input('Path to binary: ', target_dir .. '/debug/', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+      },
+    }
     -- Install golang specific config
     require('dap-go').setup {
       delve = {
