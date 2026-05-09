@@ -36,7 +36,7 @@ return {
       --    that is to say, every time a new file is opened that is associated with
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
       --    function will be executed to configure the current buffer
-      vim.api.nvim_create_autocmd('lspAttach', {
+      vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
           -- note: remember that lua is a real programming language, and as such it is possible
@@ -71,7 +71,7 @@ return {
 
           -- warn: this is not goto definition, this is goto declaration.
           --  for example, in c this would take you to the header.
-          map('grd', vim.lsp.buf.declaration, '[g]oto [d]eclaration')
+          map('grD', vim.lsp.buf.declaration, '[g]oto [D]eclaration')
 
           -- fuzzy find all the symbols in your current document.
           --  symbols are things like variables, functions, types, etc.
@@ -105,21 +105,21 @@ return {
           --
           -- when you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
+          if client and client:supports_method('textDocument/documentHighlight', event.buf) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-            vim.api.nvim_create_autocmd({ 'cursorhold', 'cursorholdi' }, {
+            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
               group = highlight_augroup,
               callback = vim.lsp.buf.document_highlight,
             })
 
-            vim.api.nvim_create_autocmd({ 'cursormoved', 'cursormovedi' }, {
+            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
               buffer = event.buf,
               group = highlight_augroup,
               callback = vim.lsp.buf.clear_references,
             })
 
-            vim.api.nvim_create_autocmd('lspdetach', {
+            vim.api.nvim_create_autocmd('LspDetach', {
               group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
               callback = function(event2)
                 vim.lsp.buf.clear_references()
@@ -132,7 +132,7 @@ return {
           -- code, if the language server you are using supports them
           --
           -- this may be unwanted, since they displace some of your code
-          if client and client_supports_method(client, vim.lsp.protocol.Methods.textdocument_inlayHint, event.buf) then
+          if client and client:supports_method('textDocument/inlayHint', event.buf) then
             map('<leader>th', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[t]oggle inlay [h]ints')
@@ -184,7 +184,6 @@ return {
         -- clangd = {},
         -- gopls = {},
         pyright = {},
-        rust_analyzer = {},
         -- ... etc. see `:help lspconfig-all` for a list of all the pre-configured lsps
         --
         -- some languages (like typescript) have entire language plugins that can be useful:
@@ -199,12 +198,12 @@ return {
           -- filetypes = { ... },
           -- capabilities = {},
           settings = {
-            lua = {
+            Lua = {
               completion = {
-                callsnippet = 'replace',
+                callSnippet = 'replace',
               },
               -- you can toggle below to ignore lua_ls's noisy `missing-fields` warnings
-              diagnostics = { disable = { 'missing-fields' }, global = { 'vim' } },
+              diagnostics = { disable = { 'missing-fields' }, globals = { 'vim' } },
             },
           },
         },

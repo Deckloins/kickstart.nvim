@@ -3,15 +3,9 @@
 --
 -- See the kickstart.nvim README for more information
 return {
-  {
-    'catgoose/nvim-colorizer.lua',
-    event = 'BufReadPre',
-    opts = {
-      rgb_fn = true,
-      css = true,
-      css_fn = true,
-      xterm = true,
-    },
-  },
+  require 'custom.plugins.nvim-colorizer',
   require 'custom.plugins.nvim-surround',
+  require 'custom.plugins.rustaceanvim',
+  require 'custom.plugins.render-markdown',
+  require 'custom.plugins.crates',
 }

@@ -2,7 +2,7 @@
     - :help lua-guide
 If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
 --]]
-
+vim.o.termguicolors = true
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
